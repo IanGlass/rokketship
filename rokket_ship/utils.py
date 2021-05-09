@@ -1,3 +1,5 @@
+# Contains re-usable methods throughout the program
+
 from pygame.image import load
 
 def load_sprite(name, with_alpha=True):

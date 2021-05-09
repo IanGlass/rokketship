@@ -3,7 +3,7 @@ import pygame
 from models import Spaceship
 from utils import load_sprite
 
-class SpaceRocks:
+class RokketShip:
     def __init__(self):
         self._init_pygame()
         self.screen = pygame.display.set_mode((800, 600))
@@ -19,20 +19,28 @@ class SpaceRocks:
 
     def _init_pygame(self):
         pygame.init()
-        pygame.display.set_caption("Space Rocks")
+        pygame.display.set_caption("Rokket Ship")
 
     def _handle_input(self):
         for event in pygame.event.get():
-            if event.type == pygame.QUIT or (
-                event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
-            ):
+            # Press ESC to quit game
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 quit()
+
+        is_key_pressed = pygame.key.get_pressed()
+
+        if is_key_pressed[pygame.K_RIGHT]:
+            self.spaceship.rotate(clockwise=True)
+        elif is_key_pressed[pygame.K_LEFT]:
+            self.spaceship.rotate(clockwise=False)
 
     def _process_game_logic(self):
         self.spaceship.move()
 
+    # Updates display with any changes this tick
     def _draw(self):
         self.screen.blit(self.background, (0, 0))
         self.spaceship.draw(self.screen)
         pygame.display.flip()
+        # Run the program at a set speed regardless of CPU speed
         self.clock.tick(60)
