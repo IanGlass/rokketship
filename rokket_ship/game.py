@@ -21,6 +21,7 @@ class RokketShip:
         pygame.init()
         pygame.display.set_caption("Rokket Ship")
 
+    # Handles user input on each tick
     def _handle_input(self):
         for event in pygame.event.get():
             # Press ESC to quit game
@@ -39,8 +40,9 @@ class RokketShip:
         if is_key_pressed[pygame.K_UP]:
             self.spaceship.accelerate()
 
+    # Processes logic outside of user input
     def _process_game_logic(self):
-        self.spaceship.move()
+        self.spaceship.move(self.screen)
 
     # Updates display with any changes this tick
     def _draw(self):
