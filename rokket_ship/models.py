@@ -26,6 +26,8 @@ class GameObject:
 class Spaceship(GameObject):
     # Determines how fast ship can rotate in place
     MANEUVERABILITY = 3
+    # Determines how fast the ship can accelerate
+    ACCELERATION = 0.25
     def __init__(self, position):
         self.direction = Vector2(UP)
 
@@ -43,3 +45,6 @@ class Spaceship(GameObject):
         rotated_surface_size = Vector2(rotated_surface.get_size())
         blit_position = self.position - rotated_surface_size * 0.5
         surface.blit(rotated_surface, blit_position)
+
+    def accelerate(self):
+        self.velocity += self.direction * self.ACCELERATION

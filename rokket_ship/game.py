@@ -29,10 +29,15 @@ class RokketShip:
 
         is_key_pressed = pygame.key.get_pressed()
 
+        # Handle ship rotation
         if is_key_pressed[pygame.K_RIGHT]:
             self.spaceship.rotate(clockwise=True)
         elif is_key_pressed[pygame.K_LEFT]:
             self.spaceship.rotate(clockwise=False)
+
+        # Handle ship acceleration
+        if is_key_pressed[pygame.K_UP]:
+            self.spaceship.accelerate()
 
     def _process_game_logic(self):
         self.spaceship.move()
