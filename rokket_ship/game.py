@@ -1,7 +1,7 @@
 import pygame
 
 from models import Asteroid, Spaceship
-from utils import get_random_position, load_sprite
+from utils import get_random_position, load_sprite, print_text
 
 
 class RokketShip:
@@ -12,6 +12,8 @@ class RokketShip:
         self.screen = pygame.display.set_mode((800, 600))
         self.background = load_sprite("space", False)
         self.clock = pygame.time.Clock()
+        self.font = pygame.font.Font(None, 64)
+        self.message = ""
 
         self.bullets = []
         self.asteroids = []
@@ -25,7 +27,8 @@ class RokketShip:
 
             self.asteroids.append(Asteroid(position, self.asteroids.append))
 
-        [Asteroid(get_random_position(self.screen), self.asteroids.append) for _ in range(6)]
+        [Asteroid(get_random_position(self.screen), self.asteroids.append)
+         for _ in range(6)]
 
     def _get_game_objects(self):
         game_objects = [*self.asteroids, *self.bullets]
@@ -79,6 +82,7 @@ class RokketShip:
             for asteroid in self.asteroids:
                 if asteroid.collides_with(self.spaceship):
                     self.spaceship = None
+                    self.message = "You Lost!"
                     break
 
         # Process bullet-asteroid collision
@@ -95,6 +99,9 @@ class RokketShip:
             if not self.screen.get_rect().collidepoint(bullet.position):
                 self.bullets.remove(bullet)
 
+        if not self.asteroids and self.spaceship:
+            self.message = "You Won!"
+
     # Updates display with any changes this tick
     def _draw(self):
         self.screen.blit(self.background, (0, 0))
@@ -104,6 +111,9 @@ class RokketShip:
 
         for game_object in self._get_game_objects():
             game_object.draw(self.screen)
+
+        if self.message:
+            print_text(self.screen, self.message, self.font)
 
         pygame.display.flip()
         # Run the program at a set speed regardless of CPU speed
