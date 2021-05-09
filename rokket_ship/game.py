@@ -23,9 +23,9 @@ class RokketShip:
                 if (position.distance_to(self.spaceship.position) > self.MIN_ASTEROID_DISTANCE):
                     break
 
-            self.asteroids.append(Asteroid(position))
+            self.asteroids.append(Asteroid(position, self.asteroids.append))
 
-        [Asteroid(get_random_position(self.screen)) for _ in range(6)]
+        [Asteroid(get_random_position(self.screen), self.asteroids.append) for _ in range(6)]
 
     def _get_game_objects(self):
         game_objects = [*self.asteroids, *self.bullets]
@@ -87,6 +87,7 @@ class RokketShip:
                 if asteroid.collides_with(bullet):
                     self.asteroids.remove(asteroid)
                     self.bullets.remove(bullet)
+                    asteroid.split()
                     break
 
         # Remove bullets that are off screen
