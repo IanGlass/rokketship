@@ -13,6 +13,8 @@ class RokketShip:
         self.background = load_sprite("space", False)
         self.clock = pygame.time.Clock()
 
+        self.spaceship = Spaceship((400, 300))
+
         self.asteroids = []
 
         for _ in range(6):
@@ -24,10 +26,14 @@ class RokketShip:
             self.asteroids.append(Asteroid(position))
 
         [Asteroid(get_random_position(self.screen)) for _ in range(6)]
-        self.spaceship = Spaceship((400, 300))
 
     def _get_game_objects(self):
-        return [*self.asteroids, self.spaceship]
+        game_objects = [*self.asteroids]
+
+        if self.spaceship:
+            game_objects.append(self.spaceship)
+
+        return game_objects
 
     def main_loop(self):
         while True:
@@ -48,27 +54,36 @@ class RokketShip:
 
         is_key_pressed = pygame.key.get_pressed()
 
-        # Handle ship rotation
-        if is_key_pressed[pygame.K_RIGHT]:
-            self.spaceship.rotate(clockwise=True)
-        elif is_key_pressed[pygame.K_LEFT]:
-            self.spaceship.rotate(clockwise=False)
+        if self.spaceship:
+            # Handle ship rotation
+            if is_key_pressed[pygame.K_RIGHT]:
+                self.spaceship.rotate(clockwise=True)
+            elif is_key_pressed[pygame.K_LEFT]:
+                self.spaceship.rotate(clockwise=False)
 
-        # Handle ship acceleration
-        if is_key_pressed[pygame.K_UP]:
-            self.spaceship.accelerate()
+            # Handle ship acceleration
+            if is_key_pressed[pygame.K_UP]:
+                self.spaceship.accelerate()
 
     # Processes logic outside of user input
     def _process_game_logic(self):
-        self.spaceship.move(self.screen)
-
         for game_object in self._get_game_objects():
             game_object.move(self.screen)
+
+        # Check each asteroid for spaceship collision
+        if self.spaceship:
+            self.spaceship.move(self.screen)
+            for asteroid in self.asteroids:
+                if asteroid.collides_with(self.spaceship):
+                    self.spaceship = None
+                    break
 
     # Updates display with any changes this tick
     def _draw(self):
         self.screen.blit(self.background, (0, 0))
-        self.spaceship.draw(self.screen)
+
+        if self.spaceship:
+            self.spaceship.draw(self.screen)
 
         for game_object in self._get_game_objects():
             game_object.draw(self.screen)
